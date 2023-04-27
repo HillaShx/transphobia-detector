@@ -1,0 +1,86 @@
+:root {
+    --main-color: #175a9e;
+    --alt-color: #6893CBFF;
+    --third-color: #3991ba;
+    --muted-color: rgba(23, 90, 158, 0.70);
+    font-family: "-apple-system",BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,"Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
+}
+
+.text-muted {
+    color: var(--muted-color)
+}
+
+.form-label {
+    background-color: rgba(151, 215, 243, 0.05);
+    border-color: rgba(23, 90, 158, 0.28);
+    border-style: solid;
+    border-radius: 2px;
+    border-width: thin;
+    margin-bottom: 10px;
+    height: 38px;
+    padding-inline-start: 5px;
+    padding-inline-end: 5px;
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+    width: clamp(182px, 214px, 214px);
+}
+
+input:focus {
+    outline-color: rgba(45, 135, 227, 0.28);
+    background-color: white;
+}
+
+.container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+    text-align: center;
+    color: #0077cc;
+}
+
+h2 {
+    text-align: center;
+    color: #0077cc;
+}
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+label {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+input[type="email"] {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    margin-bottom: 20px;
+}
+
+button[type="submit"] {
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    background-color: #0077cc;
+    color: #fff;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    background-color: #005fa3;
+}
+
+
+

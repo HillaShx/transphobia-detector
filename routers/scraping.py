@@ -1,11 +1,13 @@
-from fastapi import APIRouter
-from facebook_scraper import get_posts
 from datetime import datetime
 
-from DTO.post import FacebookPost
-import tweepy
-import config
 import pandas as pd
+import tweepy
+from facebook_scraper import get_posts
+from fastapi import APIRouter
+
+import config
+from DTO.post import FacebookPost
+from services.csv_helper import CSVWriter
 
 router = APIRouter(
     prefix="/scraping",
@@ -15,31 +17,37 @@ router = APIRouter(
 )
 
 
-def fetch_posts_for_id(id):
-    posts_itr = get_posts(id, pages=10, options={"posts_per_page": 10})
+def fetch_posts_for_id(ids):
     posts = []
-    for post in posts_itr:
-        posts.append(
-            FacebookPost(
-                username=post.get("username"),
-                post_text=post.get("post_text"),
-                shared_text=post.get("shared_text"),
-                timestamp=datetime.fromtimestamp(post.get("timestamp"))
+    for id in ids:
+        id = id.strip()
+        posts_itr = get_posts(id, pages=10, options={"posts_per_page": 10})
+        for post in posts_itr:
+            posts.append(
+                FacebookPost(
+                    username=post.get("username"),
+                    post_text=post.get("post_text"),
+                    shared_text=post.get("shared_text"),
+                    timestamp=datetime.fromtimestamp(post.get("timestamp"))
+                )
             )
-        )
     return posts
+
 
 def read_ids_from_file(filename):
     with open(filename) as f:
         lines = f.readlines()
-        return [l.rstrip('\n') for l in lines]
+        return lines
 
 
 @router.get("/facebook")
 async def scrape_facebook():
     ids = read_ids_from_file("facebook_ids_for_scraping.txt")
     posts = fetch_posts_for_id(ids)
+    csv_writer = CSVWriter(FacebookPost)
+    csv_writer.write(posts, f"storage/facebook/{datetime.date(datetime.now())}.csv")
     return posts
+
 
 @router.get("/twitter")
 async def scrape_twitter():

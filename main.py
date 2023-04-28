@@ -2,9 +2,8 @@ import uvicorn
 from dotenv import load_dotenv
 from fastapi import FastAPI
 
-from routers.scraping import router as scraping_router
 from routers.interface import router as interface_router
-
+from routers.scraping import router as scraping_router
 
 load_dotenv()
 app = FastAPI()

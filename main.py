@@ -1,21 +1,9 @@
-import uvicorn
-from dotenv import load_dotenv
-from fastapi import FastAPI
-
-from routers.interface import router as interface_router
-from routers.scraping import router as scraping_router
-
-load_dotenv()
-app = FastAPI()
+from routers.scraping import scrape_facebook
 
 
-@app.get("/health")
-def health_test():
-    return {"status": "ok"}
+def main():
+    scrape_facebook()
 
-
-app.include_router(scraping_router)
-app.include_router(interface_router)
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    main()

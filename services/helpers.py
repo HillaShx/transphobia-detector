@@ -1,6 +1,4 @@
-import os.path
 import yagmail
-
 
 nily_email = 'nily@maavarim.org'
 email_pass = 'pswhnpxqststlrvd'

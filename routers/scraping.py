@@ -35,14 +35,12 @@ def read_ids_from_file(filename):
         return [l.rstrip('\n') for l in lines]
 
 
-@router.get("/facebook")
-async def scrape_facebook():
+def scrape_facebook():
     ids = read_ids_from_file("facebook_ids_for_scraping.txt")
     posts = fetch_posts_for_id(ids)
     return posts
 
-@router.get("/twitter")
-async def scrape_twitter():
+def scrape_twitter():
     ids = read_ids_from_file("twitter_ids_for_scraping.txt")
     df = pd.DataFrame(columns=["id", "username", "text", "created_at", "lang", "possibly_sensitive"])
     client = tweepy.Client(bearer_token=config.bearer_token)
@@ -59,4 +57,4 @@ async def scrape_twitter():
                 "possibly_sensitive": tweet.possibly_sensitive,
             }
             df = pd.concat([df, pd.DataFrame([l])], ignore_index=True)
-    return
+

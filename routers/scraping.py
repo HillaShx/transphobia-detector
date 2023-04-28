@@ -2,19 +2,11 @@ from datetime import datetime
 
 import tweepy
 from facebook_scraper import get_posts
-from fastapi import APIRouter
 
 from DTO.post import FacebookPost, TwitterPost
 from config import bearer_token
 from services.csv_helper import CSVWriter
 from services.mail_helper import send_yagmail
-
-router = APIRouter(
-    prefix="/scraping",
-    tags=["scraping"],
-    dependencies=[],
-    responses={404: {"description": "Not found"}},
-)
 
 
 def fetch_posts_for_id(ids):
@@ -41,12 +33,7 @@ def read_ids_from_file(filename):
         return lines
 
 
-@router.get("/facebook")
-async def scrape_facebook():
-    """
-    Faulty; Gives out messy data
-    :return:
-    """
+def scrape_facebook():
     ids = read_ids_from_file("facebook_ids_for_scraping.txt")
     posts = fetch_posts_for_id(ids)
     csv_writer = CSVWriter(FacebookPost)
@@ -56,8 +43,11 @@ async def scrape_facebook():
     return posts
 
 
-@router.get("/twitter")
-async def scrape_twitter():
+def scrape_twitter():
+    """
+    Faulty; Gives out messy data
+    :return:
+    """
     ids = read_ids_from_file("twitter_ids_for_scraping.txt")
     client = tweepy.Client(bearer_token=bearer_token)
     posts = []

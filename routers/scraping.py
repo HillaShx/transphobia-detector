@@ -1,3 +1,4 @@
+import time
 from datetime import datetime
 
 import tweepy
@@ -74,3 +75,15 @@ def scrape_twitter():
     csv_writer.write(posts, output_path)
     send_yagmail("hilla.sh@gmail.com", output_path)
     return posts
+
+
+def scrap_every_interval(interval_in_sec, f):
+    def handler(state):
+        while state.run:
+            f()
+            print(f"Scrapped {f}")
+            time.sleep(interval_in_sec)
+    return handler
+
+
+

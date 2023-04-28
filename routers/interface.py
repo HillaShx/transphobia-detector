@@ -6,7 +6,8 @@ from starlette.requests import Request
 from starlette.responses import FileResponse, Response
 from starlette.templating import Jinja2Templates
 
-from business_logic.authentication import oauth, is_google_authoritative, is_person_authorized, GOOGLE_MIN_OAUTH
+from business_logic.authentication import oauth, is_google_authoritative, is_person_authorized, GOOGLE_MIN_OAUTH, \
+    add_new_file_to_drive, add_a_new_user_to_whitelist, get_current_user
 
 router = APIRouter(
     prefix="/interface",
@@ -65,12 +66,16 @@ async def add_user():
 
 
 @router.get('/new_user')
-async def add_user(request: Request, user=Depends(auth.get_current_user)):
+async def add_user(request: Request, user=Depends(get_current_user)):
     # todo - finish authorization
     new_user_email = request.query_params.get("email", None)
     if new_user_email is None:
         return {"message": "Invalid email"}  # todo - validation that the email format is ok
-    is_successful = auth.add_a_new_user_to_whitelist(new_user_email)
+    is_successful = add_a_new_user_to_whitelist(new_user_email)
     if not is_successful:
         return {"message": "Failed to add a new user. Please try again later"}
     return {"message": f"Added a new user {new_user_email}"}
+
+@router.get('add_file')
+async def add_file(request:Request):
+    return add_new_file_to_drive('resources/whitelist.json')

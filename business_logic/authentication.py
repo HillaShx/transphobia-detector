@@ -1,6 +1,8 @@
 import hashlib
 import json
+from http import HTTPStatus
 
+import requests
 from authlib.integrations.starlette_client import OAuth
 from fastapi import HTTPException
 from starlette.config import Config
@@ -16,11 +18,13 @@ GOOGLE_MIN_OAUTH = {
     'client_id': '<Add client ID>',
     'client_secret': '<Add client secret',
     'client_kwargs': {
-        'scope': 'openid email profile',
+        'scope': 'openid email profile https://www.googleapis.com/auth/drive.file',
     },
     'authorize_params': {'access_type': 'offline',
                          'include_granted_scopes': 'true'}
 }
+
+drive_create_file_url = 'https://www.googleapis.com/upload/drive/v3/files?uploadType=media'
 
 
 def is_google_authoritative(person_info) -> bool:
@@ -77,3 +81,26 @@ def add_a_new_user_to_whitelist(email: str) -> bool:
         # Handle any exceptions that might occur during reading or writing
         print(f"Error accessing file: {e}")
         return False
+
+
+def add_new_file_to_drive(request: Request, file) -> bool:
+    user = request.session['user']
+    token = user.token
+    headers = {"Authorization": "Bearer ",
+               'Content-Type': 'MIME',
+               'Content-Length': file.size()}
+    file_metadata = {
+        "title": f"{file.name}.csv",
+        'name': f"{file.name}.csv",
+        "parents": [{"id": "1geJkc84wcKDl95rvSrCXc0zg66DJxJ2S"}]
+    }
+    files = {
+        "data": ("metadata", json.dumps(file_metadata), "application/json; charset=UTF-8"),
+        "file": requests.get("image_url").content
+    }
+    response = requests.post(drive_create_file_url, headers=headers, files=files)
+
+    if not response.status == HTTPStatus.OK:
+        # some retry machinism
+        pass
+    return True

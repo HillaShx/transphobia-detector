@@ -1,3 +1,4 @@
+import time
 from datetime import datetime
 
 import tweepy
@@ -13,7 +14,13 @@ def fetch_posts_for_id(ids):
     posts = []
     for id in ids:
         id = id.strip()
-        posts_itr = get_posts(id, pages=10, options={"posts_per_page": 10})
+        retry = True
+        while retry:
+            try:
+                posts_itr = get_posts(id, pages=10, options={"posts_per_page": 10})
+                retry = False
+            except:
+                time.sleep(6000)
         for post in posts_itr:
             posts.append(
                 FacebookPost(
@@ -53,7 +60,12 @@ def scrape_twitter():
     posts = []
     for id in ids:
         id = id.strip()
-        new_tweets = client.get_users_tweets(id, tweet_fields=['id', 'text', 'possibly_sensitive', 'lang', 'created_at'])
+        retry = True
+        while retry:
+            try:
+                new_tweets = client.get_users_tweets(id, tweet_fields=['id', 'text', 'possibly_sensitive', 'lang', 'created_at'])
+            except:
+                time.sleep(6000)
         with open("tweets.txt", "w") as f:
             for tweet in new_tweets.data:
                 f.write(str(tweet))
